@@ -31,10 +31,10 @@ Téléchargez les tweets et les annotations sur le site de la tâche TREC IS:
 
 ## Générer les résumés
 
-Exécutez le fichier python :
+Déplacez vous dans le dossier SetSummTweet, puis exécutez le fichier python :
 
 ```
-python initialization.py [-remove_coverage=False]
+python initialization.py
 ```
 
 * Les résumés sont générés et placés dans le répertoire [Résumés](/Résumés)
