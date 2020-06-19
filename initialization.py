@@ -219,21 +219,23 @@ for i in df["content.event"].unique():
 		with open('./Données/Tweets/'+i+'.txt','a',encoding='UTF-8') as file:
 			file.write(with_surrogates(cleanRaw(j))+'\n')
 
+"""
+Create summaries
+"""
 
-df_summary = df[df.apply(lambda x: high_priority(x["content.priority"],x["id"]),axis=1)]
-df_summary = df_summary[df_summary.apply(lambda x: news(x["content.categories"],x["id"]),axis=1)]
-df_summary["content.timestamp"] = pd.to_datetime(df_summary["content.timestamp"])
-df_summary = df_summary.sort_values(by=["content.timestamp"])
+df_redundancy = pd.read_csv("./Annotations/annotations_redundancy.txt")
+l_redundancy = df_redundancy[df_redundancy["new"]==True]["id"]
+s_redundancy = set()
+for i in l_redundancy:
+	s_redundancy.add(str(i))
+df3 = df
+df3 = df3.sort_values(by=["content.timestamp"])
 for i in l_twin_timestamp_order:
-	df_summary = timestamp_ordering(df_summary,i)
-
-"""
-Create NHP events file with News High Priority tweets
-"""
-
-for i in df_summary["content.event"].unique():
+	df3 = timestamp_ordering(df3,i)
+df3 = df3[df3["id"].apply(lambda x: True if x in s_redundancy else False)]
+for i in df3["content.event"].unique():
 	if os.path.exists('./Données/Résumés/'+i+'.txt'):
 		os.remove('./Données/Résumés/'+i+'.txt')
-	for j in df_summary[df_summary["content.event"]==i]["content.text"]:
+	for j in df3[df3["content.event"]==i]["content.text"]:
 		with open('./Données/Résumés/'+i+'.txt','a',encoding='UTF-8') as file:
 			file.write(with_surrogates(clean(j))+'\n')
